@@ -5,17 +5,27 @@ import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
+import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TerminalCdCommandSteps {
+public class CdCommandBehaviour {
 
     private TerminalService terminal;
     private FileSystem fileSystem;
+
+    @Test
+    public void cdCommandAcceptanceTests() throws Exception {
+        aBehaviouralTestRunner()
+                .usingStepsFrom(this)
+                .withStory("cd_command_change_current_directory.story")
+                .run();
+    }
 
     @Given("a terminal service with working directory set initially to $path")
     public void givenTerminalWhichHasWorkingDirectorySetTo(String path) throws IOException {
@@ -31,12 +41,11 @@ public class TerminalCdCommandSteps {
     public void whenIRunCdCommandWithDirectoryNameAs(String dirName) throws IOException {
         recreateDirectory(dirName);
 
-        String response = terminal.processLinuxCommand("cd " + dirName);
-        assertThat(response).isEmpty();
+        terminal.processLinuxCommand("cd " + dirName);
     }
 
     @Then("pwd command should return string equals to $path")
-    public void thenPwdCommandShouldReturnStringEqualsTo(String path) {
+    public void thenPwdCommandShouldReturnStringEqualsTo(String path) throws IOException {
         assertThat(terminal.processLinuxCommand("pwd")).isEqualToIgnoringCase(path);
     }
 

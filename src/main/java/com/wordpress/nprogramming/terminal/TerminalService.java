@@ -1,15 +1,15 @@
 package com.wordpress.nprogramming.terminal;
 
 import com.wordpress.nprogramming.terminal.command.Cd;
-import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
+import com.wordpress.nprogramming.terminal.command.Mkdir;
 import com.wordpress.nprogramming.terminal.command.Pwd;
+import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
 import com.wordpress.nprogramming.terminal.core.SimpleTerminalContext;
 import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,21 +31,18 @@ public class TerminalService {
 
         linuxCommandHandlers.add(new Pwd());
         linuxCommandHandlers.add(new Cd());
+        linuxCommandHandlers.add(new Mkdir());
     }
 
-      public String processLinuxCommand(String linuxCommand) {
+      public String processLinuxCommand(String linuxCommand) throws IOException {
 
         String[] linuxCommandParts = linuxCommand.split(" ");
           Optional<LinuxCommandHandler> linuxCommandHandler = getLinuxCommandHandler(linuxCommandParts[0]);
 
           if (linuxCommandHandler.isPresent()) {
-              try {
-                  return linuxCommandHandler.get().process(
-                          terminalContext,
-                          extractLinuxCommandArguments(linuxCommandParts));
-              } catch (FileNotFoundException | NotDirectoryException e) {
-                  return e.getMessage();
-              }
+              return linuxCommandHandler.get().process(
+                      terminalContext,
+                      extractLinuxCommandArguments(linuxCommandParts));
           }
 
         return "Invalid Command!";

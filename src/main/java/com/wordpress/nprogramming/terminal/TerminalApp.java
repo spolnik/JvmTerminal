@@ -32,10 +32,15 @@ public final class TerminalApp {
     }
 
     private void process(String rawCommand) {
-        final String result = terminal.processLinuxCommand(rawCommand);
+        final String result;
 
-        if (!Strings.isNullOrEmpty(result))
-            System.out.println(result);
+        try {
+            result = terminal.processLinuxCommand(rawCommand);
+            if (!Strings.isNullOrEmpty(result))
+                System.out.println(result);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void prompt() {
@@ -43,7 +48,13 @@ public final class TerminalApp {
     }
 
     private String currentDir() {
-        String workingDir = terminal.processLinuxCommand("pwd");
-        return Paths.get(workingDir).getFileName().toString();
+        try {
+            String workingDir = terminal.processLinuxCommand("pwd");
+            return Paths.get(workingDir).getFileName().toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }
