@@ -1,77 +1,56 @@
 package com.wordpress.nprogramming.terminal;
 
-import com.google.common.base.Strings;
+import com.wordpress.nprogramming.terminal.command.Cd;
+import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
+import com.wordpress.nprogramming.terminal.command.Pwd;
+import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class TerminalService {
-    private final FileSystem fileSystem;
-    private String workingDirectory;
+
+    private final List<LinuxCommandHandler> linuxCommandHandlers = new ArrayList<>();
+    private final TerminalContext terminalContext;
 
     public TerminalService() {
         this(FileSystems.getDefault());
     }
 
     public TerminalService(FileSystem aFileSystem) {
-        fileSystem = aFileSystem;
-        workingDirectory = aFileSystem.getPath(".").toAbsolutePath().normalize().toString();
+        String workingDirectory = aFileSystem.getPath(".").toAbsolutePath().normalize().toString();
+
+        terminalContext = new TerminalContext(aFileSystem, workingDirectory);
+
+        linuxCommandHandlers.add(new Pwd());
+        linuxCommandHandlers.add(new Cd());
     }
 
-    public String pwd() {
-        return workingDirectory;
-    }
+      public String processLinuxCommand(String linuxCommand) {
 
-    public void cd(String directoryName) {
-        workingDirectory =
-                directoryName.startsWith("\\")
-                        ? directoryName
-                        : buildPath(directoryName);
-    }
+        String[] linuxCommandParts = linuxCommand.split(" ");
+          Optional<LinuxCommandHandler> linuxCommandHandler = getLinuxCommandHandler(linuxCommandParts[0]);
 
-    private String buildPath(String path) {
-        Path workingDirectoryPath = fileSystem.getPath(workingDirectory);
-        Path resolvedPath = workingDirectoryPath.resolve(path).normalize();
-        return resolvedPath.toAbsolutePath().toString();
-    }
-
-    public static void main(String[] args) throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        prompt();
-        String rawCommand = reader.readLine();
-
-        final TerminalService terminal = new TerminalService();
-
-        while (!Strings.isNullOrEmpty(rawCommand)) {
-            final String result = processCommand(terminal, rawCommand);
-
-            if (!Strings.isNullOrEmpty(result))
-                System.out.println(result);
-
-            prompt();
-            rawCommand = reader.readLine();
+          if (linuxCommandHandler.isPresent()) {
+            return linuxCommandHandler.get().process(
+                    terminalContext,
+                    extractLinuxCommandArguments(linuxCommandParts));
         }
 
-        System.out.print("Console is closing... Press <enter> ...");
-        reader.readLine();
+        return "Invalid Command!";
     }
 
-    private static String processCommand(TerminalService terminal, String rawCommand) {
-        if (rawCommand.startsWith("pwd"))
-            return terminal.pwd();
-        else if (rawCommand.startsWith("cd")) {
-            String[] args = rawCommand.split(" ");
-            terminal.cd(args[1]);
-        }
-
-        return "";
+    private Optional<LinuxCommandHandler> getLinuxCommandHandler(String linuxCommandPart) {
+        return linuxCommandHandlers.stream()
+                .filter(handler -> handler.canHandle(linuxCommandPart))
+                .findFirst();
     }
 
-    private static void prompt() {
-        System.out.print("> ");
+    private String[] extractLinuxCommandArguments(String[] linuxCommandParts) {
+        return Arrays.copyOfRange(linuxCommandParts, 1, linuxCommandParts.length);
     }
 }

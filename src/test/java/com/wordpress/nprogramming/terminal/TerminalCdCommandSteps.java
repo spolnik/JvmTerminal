@@ -11,7 +11,7 @@ public class TerminalCdCommandSteps {
 
     private TerminalService terminal;
 
-    @Given("a terminal service with working directory set to $path")
+    @Given("a terminal service with working directory set initially to $path")
     public void givenTerminalWhichHasWorkingDirectorySetTo(String path) {
         terminal =
                 new TerminalService(
@@ -20,13 +20,13 @@ public class TerminalCdCommandSteps {
                                 .build());
     }
 
-    @When("I run cd command with $directoryName directory name as argument")
-    public void whenIRunCdCommandWithGo_hereDirectoryNameAsArgument(String directoryName) {
-        terminal.cd(directoryName);
+    @When("I run $rawCommand command")
+    public void whenIRunCdCommandWithDirectoryNameAs(String rawCommand) {
+        terminal.processLinuxCommand(rawCommand);
     }
 
     @Then("pwd command should return string equals to $path")
     public void thenPwdCommandShouldReturnStringEqualsTo(String path) {
-        assertThat(terminal.pwd()).isEqualToIgnoringCase(path);
+        assertThat(terminal.processLinuxCommand("pwd")).isEqualToIgnoringCase(path);
     }
 }
