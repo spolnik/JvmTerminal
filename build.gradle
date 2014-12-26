@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+repositories {
+    jcenter()
+}
+
+configurations { jbehave }
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'com.google.jimfs:jimfs:1.0'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.jbehave:jbehave-core:3.9.5'
+    testCompile 'de.codecentric:jbehave-junit-runner:1.1.2'
+    testCompile 'org.assertj:assertj-core:1.7.0'
+}
+
+idea.module {
+    downloadSources = true
+}
+
+/*
+* JBehave requires the Maven's "target" folder in order
+* to obtain the absolute path from relative path.
+*/
+test {
+    doFirst {
+        file('target').mkdirs();
+    }
+    doLast {
+        file('target').delete();
+    }
+}
