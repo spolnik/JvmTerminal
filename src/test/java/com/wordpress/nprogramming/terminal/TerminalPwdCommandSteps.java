@@ -8,7 +8,6 @@ import org.jbehave.core.annotations.When;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,20 +15,15 @@ public class TerminalPwdCommandSteps {
 
     private TerminalService terminal;
     private String result;
-    private String workingDirectoryPath;
-    private FileSystem fileSystem;
 
-    @Given("working directory name equals to $path")
-    public void givenWorkingDirectoryNameEqualsTo(String path) throws IOException {
-        workingDirectoryPath = path;
+    @Given("a terminal service with working directory set to $path")
+    public void givenWorkingDirectoryNameSetTo(String path) throws IOException {
+        FileSystem fileSystem =
+                Jimfs.newFileSystem(
+                        Configuration.unix().toBuilder()
+                                .setWorkingDirectory(path).build());
 
-        fileSystem = Jimfs.newFileSystem(Configuration.unix());
-        Files.createDirectory(fileSystem.getPath(path));
-    }
-
-    @Given("a terminal service")
-    public void aTerminalService() {
-        terminal = new TerminalService(fileSystem, workingDirectoryPath);
+        terminal = new TerminalService(fileSystem);
     }
 
     @When("I run pwd command to print working directory")
@@ -37,8 +31,8 @@ public class TerminalPwdCommandSteps {
         result = terminal.pwd();
     }
 
-    @Then("it should return string equal to $path")
-    public void thenItShouldReturnPathEqualTohomejacek(String path) {
+    @Then("it should return string equals to $path")
+    public void thenItShouldReturnPathEqualsTohomejacek(String path) {
         assertThat(result).isEqualToIgnoringCase(path);
     }
 }

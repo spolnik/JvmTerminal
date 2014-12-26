@@ -41,6 +41,8 @@ public class TerminalStories extends JUnitStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new TerminalPwdCommandSteps());
+        return new InstanceStepsFactory(configuration(),
+                new TerminalPwdCommandSteps(),
+                new TerminalCdCommandSteps());
     }
 }
