@@ -1,4 +1,4 @@
-package com.wordpress.nprogramming.terminal;
+package com.wordpress.nprogramming.terminal.acceptance;
 
 import de.codecentric.jbehave.junit.monitoring.JUnitReportingRunner;
 import org.jbehave.core.configuration.Configuration;

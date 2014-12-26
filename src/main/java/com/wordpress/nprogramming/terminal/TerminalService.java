@@ -3,6 +3,7 @@ package com.wordpress.nprogramming.terminal;
 import com.wordpress.nprogramming.terminal.command.Cd;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
 import com.wordpress.nprogramming.terminal.command.Pwd;
+import com.wordpress.nprogramming.terminal.core.SimpleTerminalContext;
 import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
 import java.nio.file.FileSystem;
@@ -24,7 +25,7 @@ public class TerminalService {
     public TerminalService(FileSystem aFileSystem) {
         String workingDirectory = aFileSystem.getPath(".").toAbsolutePath().normalize().toString();
 
-        terminalContext = new TerminalContext(aFileSystem, workingDirectory);
+        terminalContext = new SimpleTerminalContext(aFileSystem, workingDirectory);
 
         linuxCommandHandlers.add(new Pwd());
         linuxCommandHandlers.add(new Cd());

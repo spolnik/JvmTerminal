@@ -1,5 +1,6 @@
-package com.wordpress.nprogramming.terminal;
+package com.wordpress.nprogramming.terminal.acceptance;
 
+import com.wordpress.nprogramming.terminal.TerminalService;
 import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;

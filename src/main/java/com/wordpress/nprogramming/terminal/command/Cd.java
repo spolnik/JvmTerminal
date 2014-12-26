@@ -1,28 +1,34 @@
 package com.wordpress.nprogramming.terminal.command;
 
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
+import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
 import java.nio.file.Path;
 
 public class Cd implements LinuxCommandHandler {
 
     @Override
-    public boolean canHandle(String linuxCommand) {
-        return linuxCommand.equals("cd");
+    public String commandName() {
+        return "cd";
     }
 
     @Override
     public String process(TerminalContext context, String... args) {
-        String directoryName = args[0];
+        if (args.length == 0) {
+            context.changeWorkingDirectory(context.getHomeDir());
+            return "";
+        }
 
-        String workingDirectory =
-                directoryName.startsWith("\\")
-                        ? directoryName
-                        : buildNewWorkingDirectoryPath(context, directoryName);
+        String workingDirectory = getNewWorkingDir(context, args[0]);
 
         context.changeWorkingDirectory(workingDirectory);
         return "";
+    }
+
+    private String getNewWorkingDir(TerminalContext context, String directoryName) {
+        return directoryName.startsWith(context.getFileSystem().getSeparator())
+                ? directoryName
+                : buildNewWorkingDirectoryPath(context, directoryName);
     }
 
     private String buildNewWorkingDirectoryPath(TerminalContext context, String path) {
