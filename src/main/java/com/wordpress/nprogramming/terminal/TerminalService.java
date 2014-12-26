@@ -3,11 +3,15 @@ package com.wordpress.nprogramming.terminal;
 import java.nio.file.FileSystem;
 
 public class TerminalService {
-    public void setFileSystem(FileSystem fileSystem) {
+    private final FileSystem fileSystem;
+    private final String workingDirectory;
 
+    public TerminalService(FileSystem aFileSystem, String aWorkingDirectory) {
+        fileSystem = aFileSystem;
+        workingDirectory = aWorkingDirectory;
     }
 
     public String pwd() {
-        return null;
+        return workingDirectory;
     }
 }

@@ -9,7 +9,6 @@ import org.jbehave.core.annotations.When;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,18 +16,20 @@ public class TerminalPwdCommandSteps {
 
     private TerminalService terminal;
     private String result;
-
-    @Given("a terminal service")
-    public void aTerminalService() {
-        terminal = new TerminalService();
-    }
+    private String workingDirectoryPath;
+    private FileSystem fileSystem;
 
     @Given("working directory name equals to $path")
     public void givenWorkingDirectoryNameEqualsTo(String path) throws IOException {
-        FileSystem fileSystem = Jimfs.newFileSystem(Configuration.unix());
-        Path workingDirectoryPath = fileSystem.getPath(path);
-        Files.createDirectory(workingDirectoryPath);
-        terminal.setFileSystem(fileSystem);
+        workingDirectoryPath = path;
+
+        fileSystem = Jimfs.newFileSystem(Configuration.unix());
+        Files.createDirectory(fileSystem.getPath(path));
+    }
+
+    @Given("a terminal service")
+    public void aTerminalService() {
+        terminal = new TerminalService(fileSystem, workingDirectoryPath);
     }
 
     @When("I run pwd command to print working directory")
