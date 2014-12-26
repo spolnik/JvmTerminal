@@ -2,17 +2,19 @@ package com.wordpress.nprogramming.terminal.command;
 
 import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
+import com.wordpress.nprogramming.terminal.core.LinuxCommandName;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.aLinuxCommandName;
 import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 
 public class Cd implements LinuxCommand {
 
     @Override
-    public String name() {
-        return "cd";
+    public LinuxCommandName name() {
+        return aLinuxCommandName("cd");
     }
 
     @Override
