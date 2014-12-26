@@ -6,8 +6,10 @@ import com.wordpress.nprogramming.terminal.command.Pwd;
 import com.wordpress.nprogramming.terminal.core.SimpleTerminalContext;
 import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
+import java.io.FileNotFoundException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,10 +39,14 @@ public class TerminalService {
           Optional<LinuxCommandHandler> linuxCommandHandler = getLinuxCommandHandler(linuxCommandParts[0]);
 
           if (linuxCommandHandler.isPresent()) {
-            return linuxCommandHandler.get().process(
-                    terminalContext,
-                    extractLinuxCommandArguments(linuxCommandParts));
-        }
+              try {
+                  return linuxCommandHandler.get().process(
+                          terminalContext,
+                          extractLinuxCommandArguments(linuxCommandParts));
+              } catch (FileNotFoundException | NotDirectoryException e) {
+                  return e.getMessage();
+              }
+          }
 
         return "Invalid Command!";
     }

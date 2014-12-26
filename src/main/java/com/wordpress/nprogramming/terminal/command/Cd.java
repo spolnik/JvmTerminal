@@ -3,6 +3,8 @@ package com.wordpress.nprogramming.terminal.command;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
 import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
+import java.io.FileNotFoundException;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 
 public class Cd implements LinuxCommandHandler {
@@ -13,7 +15,7 @@ public class Cd implements LinuxCommandHandler {
     }
 
     @Override
-    public String process(TerminalContext context, String... args) {
+    public String process(TerminalContext context, String... args) throws FileNotFoundException, NotDirectoryException {
         if (args.length == 0) {
             context.changeWorkingDirectory(context.getHomeDir());
             return "";
