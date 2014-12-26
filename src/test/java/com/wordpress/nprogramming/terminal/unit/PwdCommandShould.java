@@ -1,7 +1,7 @@
 package com.wordpress.nprogramming.terminal.unit;
 
 import com.wordpress.nprogramming.terminal.command.Pwd;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
+import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,13 +37,15 @@ public class PwdCommandShould {
     }
 
     @Test
-    public void printCorrectlyWorkingDirectory() throws Exception {
-        TerminalContext terminalContext = mock(TerminalContext.class);
+    public void printCorrectlyWorkingDirectory()
+            throws Exception {
 
-        when(terminalContext.getWorkingDirectory())
+        FileSystemContext terminalContext = mock(FileSystemContext.class);
+
+        when(terminalContext.workingDir())
                 .thenReturn(WORKING_DIR);
 
-        String result = new Pwd().process(terminalContext);
+        String result = new Pwd().execute(terminalContext);
 
         assertThat(result).isEqualTo(WORKING_DIR);
     }

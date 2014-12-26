@@ -26,7 +26,10 @@ public class PwdCommandBehaviour {
     }
 
     @Given("a terminal service with working directory set to $path")
-    public void givenWorkingDirectoryNameSetTo(String path) throws IOException {
+    public void givenWorkingDirectoryNameSetTo(
+            String path)
+            throws IOException {
+
         terminal = new TerminalService(
                 FileSystemBuilder.create()
                         .withWorkingDirectorySetTo(path)
@@ -34,12 +37,17 @@ public class PwdCommandBehaviour {
     }
 
     @When("I run pwd command to print working directory")
-    public void whenIRunPwdCommandToPrintWorkingDirectory() throws IOException {
+    public void whenIRunPwdCommandToPrintWorkingDirectory()
+            throws IOException {
+
         result = terminal.processLinuxCommand("pwd");
     }
 
-    @Then("it should return string equals to $path")
-    public void thenItShouldReturnPathEqualsTohomejacek(String path) {
-        assertThat(result).isEqualToIgnoringCase(path);
+    @Then("it should return string equal to $path")
+    public void thenItShouldReturnPathEqualTo(
+            String path) {
+
+        assertThat(result)
+                .isEqualToIgnoringCase(path);
     }
 }

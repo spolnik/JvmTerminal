@@ -1,10 +1,10 @@
 package com.wordpress.nprogramming.terminal;
 
 import com.wordpress.nprogramming.terminal.command.Cd;
-import com.wordpress.nprogramming.terminal.command.Mkdir;
+import com.wordpress.nprogramming.terminal.command.MkDir;
 import com.wordpress.nprogramming.terminal.command.Pwd;
-import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
-import com.wordpress.nprogramming.terminal.core.SimpleTerminalContext;
+import com.wordpress.nprogramming.terminal.core.FileSystemContext;
+import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
 import java.io.IOException;
@@ -15,46 +15,65 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
+
 public class TerminalService {
 
-    private final List<LinuxCommandHandler> linuxCommandHandlers = new ArrayList<>();
-    private final TerminalContext terminalContext;
+    private final List<LinuxCommand> linuxCommands = new ArrayList<>();
+    private final FileSystemContext terminalContext;
 
     public TerminalService() {
         this(FileSystems.getDefault());
     }
 
     public TerminalService(FileSystem aFileSystem) {
-        String workingDirectory = aFileSystem.getPath(".").toAbsolutePath().normalize().toString();
+        String workingDirectory =
+                workingDir(aFileSystem);
 
-        terminalContext = new SimpleTerminalContext(aFileSystem, workingDirectory);
+        terminalContext =
+                new TerminalContext(aFileSystem, workingDirectory);
 
-        linuxCommandHandlers.add(new Pwd());
-        linuxCommandHandlers.add(new Cd());
-        linuxCommandHandlers.add(new Mkdir());
+        linuxCommands.addAll(
+                Arrays.asList(
+                        new Pwd(),
+                        new Cd(),
+                        new MkDir()));
     }
 
-      public String processLinuxCommand(String linuxCommand) throws IOException {
+    private String workingDir(FileSystem aFileSystem) {
+        return normalize(aFileSystem.getPath("."));
+    }
 
-        String[] linuxCommandParts = linuxCommand.split(" ");
-          Optional<LinuxCommandHandler> linuxCommandHandler = getLinuxCommandHandler(linuxCommandParts[0]);
+    public String processLinuxCommand(
+            String rawCommand)
+            throws IOException {
 
-          if (linuxCommandHandler.isPresent()) {
-              return linuxCommandHandler.get().process(
-                      terminalContext,
-                      extractLinuxCommandArguments(linuxCommandParts));
-          }
+        String[] linuxCommandParts =
+                rawCommand.split(" ");
+        Optional<LinuxCommand> linuxCommand =
+                linuxCommand(linuxCommandParts[0]);
+
+        if (linuxCommand.isPresent()) {
+            return linuxCommand.get().execute(
+                    terminalContext,
+                    linuxCommandArguments(linuxCommandParts));
+        }
 
         return "Invalid Command!";
     }
 
-    private Optional<LinuxCommandHandler> getLinuxCommandHandler(String linuxCommandPart) {
-        return linuxCommandHandlers.stream()
-                .filter(handler -> handler.canHandle(linuxCommandPart))
+    private Optional<LinuxCommand> linuxCommand(
+            String linuxCommandName) {
+
+        return linuxCommands.stream()
+                .filter(command -> command.canHandle(linuxCommandName))
                 .findFirst();
     }
 
-    private String[] extractLinuxCommandArguments(String[] linuxCommandParts) {
-        return Arrays.copyOfRange(linuxCommandParts, 1, linuxCommandParts.length);
+    private String[] linuxCommandArguments(
+            String[] linuxCommandParts) {
+
+        return Arrays.copyOfRange(
+                linuxCommandParts, 1, linuxCommandParts.length);
     }
 }

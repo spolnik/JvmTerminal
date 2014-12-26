@@ -9,19 +9,18 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
+import static com.wordpress.nprogramming.terminal.utils.PathHelper.deleteIfExistsAndThenCreateDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MkdirCommandBehaviour {
+public class MkDirCommandBehaviour {
 
-    private FileSystem fileSystem;
     private TerminalService terminal;
     private String dirName;
 
     @Test
-    public void mkdirCommandAcceptanceTests() throws Exception {
+    public void mkDirCommandAcceptanceTests() throws Exception {
         aBehaviouralTestRunner()
                 .usingStepsFrom(this)
                 .withStory("mkdir_command_creates_new_directory.story")
@@ -29,34 +28,40 @@ public class MkdirCommandBehaviour {
     }
 
     @Given("a terminal service with working directory set to $path")
-    public void givenATerminalServiceWithWorkingDirectorySetTo(String path) throws IOException {
-        fileSystem = FileSystemBuilder.create()
+    public void givenATerminalServiceWithWorkingDirectorySetTo(
+            String path)
+            throws IOException {
+
+        final FileSystem fileSystem = FileSystemBuilder.create()
                 .withWorkingDirectorySetTo(path)
                 .build();
 
-        recreateDirectory(path);
+        deleteIfExistsAndThenCreateDirectory(path).runOn(fileSystem);
         terminal = new TerminalService(fileSystem);
     }
 
     @When("I run mkdir $dirName command")
-    public void whenIRunMkdirCommandWithDirNameEqualsTo(String dirName) throws IOException {
-        this.dirName = dirName;
-        terminal.processLinuxCommand("mkdir " + dirName);
+    public void whenIRunMkdirCommandWithDirNameEqualsTo(
+            String aDirName)
+            throws IOException {
+
+        dirName = aDirName;
+        terminal.processLinuxCommand("mkdir " + aDirName);
     }
 
     @Then("changing directory to newly created one should success")
-    public void thenChangingDirectoryToNewlyCreatedOneShouldSuccess() throws IOException {
+    public void thenChangingDirectoryToNewlyCreatedOneShouldSuccess()
+            throws IOException {
+
         terminal.processLinuxCommand("cd " + dirName);
     }
 
-    @Then("pwd command should return string equals to $path")
-    public void thenPwdCommandShouldReturnStringEqualsTo(String path) throws IOException {
-        assertThat(terminal.processLinuxCommand("pwd")).isEqualTo(path);
-    }
+    @Then("pwd command should return string equal to $path")
+    public void thenPwdCommandShouldReturnStringEqualTo(
+            String path)
+            throws IOException {
 
-    private void recreateDirectory(String dirName) throws IOException {
-        Path path = fileSystem.getPath(dirName).toAbsolutePath().normalize();
-        fileSystem.provider().deleteIfExists(path);
-        fileSystem.provider().createDirectory(path);
+        assertThat(terminal.processLinuxCommand("pwd"))
+                .isEqualTo(path);
     }
 }

@@ -1,45 +1,50 @@
 package com.wordpress.nprogramming.terminal.command;
 
-import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
+import com.wordpress.nprogramming.terminal.core.LinuxCommand;
+import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 
-import java.io.FileNotFoundException;
-import java.nio.file.NotDirectoryException;
+import java.io.IOException;
 import java.nio.file.Path;
 
-public class Cd implements LinuxCommandHandler {
+import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
+
+public class Cd implements LinuxCommand {
 
     @Override
-    public String commandName() {
+    public String name() {
         return "cd";
     }
 
     @Override
-    public String process(TerminalContext context, String... args) throws FileNotFoundException, NotDirectoryException {
+    public String execute(
+            FileSystemContext context, String... args)
+            throws IOException {
+
         if (args.length == 0) {
-            context.changeWorkingDirectory(context.getHomeDir());
+            context.changeWorkingDir(context.homeDir());
             return "";
         }
 
-        String workingDirectory = getNewWorkingDir(context, args[0]);
+        String workingDirectory = newWorkingDir(context, args[0]);
 
-        context.changeWorkingDirectory(workingDirectory);
+        context.changeWorkingDir(workingDirectory);
         return "";
     }
 
-    private String getNewWorkingDir(TerminalContext context, String directoryName) {
-        return directoryName.startsWith(context.getFileSystem().getSeparator())
+    private String newWorkingDir(
+            FileSystemContext context, String directoryName) {
+
+        return directoryName.startsWith(context.fileSystem().getSeparator())
                 ? directoryName
                 : buildNewWorkingDirectoryPath(context, directoryName);
     }
 
-    private String buildNewWorkingDirectoryPath(TerminalContext context, String path) {
+    private String buildNewWorkingDirectoryPath(
+            FileSystemContext context, String path) {
+
         Path workingDirectoryPath =
-                context.getFileSystem().getPath(context.getWorkingDirectory());
+                context.fileSystem().getPath(context.workingDir());
 
-        Path resolvedPath =
-                workingDirectoryPath.resolve(path).normalize();
-
-        return resolvedPath.toAbsolutePath().toString();
+        return normalize(workingDirectoryPath.resolve(path));
     }
 }

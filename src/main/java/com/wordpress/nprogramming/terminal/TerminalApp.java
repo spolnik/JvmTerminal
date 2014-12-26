@@ -17,12 +17,14 @@ public final class TerminalApp {
     }
 
     private void run() throws IOException {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader reader =
+                new BufferedReader(new InputStreamReader(System.in));
+
         prompt();
         String rawCommand = reader.readLine();
 
         while (!Strings.isNullOrEmpty(rawCommand)) {
-            process(rawCommand);
+            processLinuxCommand(rawCommand);
             prompt();
             rawCommand = reader.readLine();
         }
@@ -31,13 +33,16 @@ public final class TerminalApp {
         reader.readLine();
     }
 
-    private void process(String rawCommand) {
+    private void processLinuxCommand(String rawCommand) {
         final String result;
 
         try {
             result = terminal.processLinuxCommand(rawCommand);
-            if (!Strings.isNullOrEmpty(result))
+
+            if (!Strings.isNullOrEmpty(result)) {
                 System.out.println(result);
+            }
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -49,8 +54,12 @@ public final class TerminalApp {
 
     private String currentDir() {
         try {
-            String workingDir = terminal.processLinuxCommand("pwd");
-            return Paths.get(workingDir).getFileName().toString();
+            String workingDir =
+                    terminal.processLinuxCommand("pwd");
+
+            return Paths.get(workingDir)
+                    .getFileName().toString();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

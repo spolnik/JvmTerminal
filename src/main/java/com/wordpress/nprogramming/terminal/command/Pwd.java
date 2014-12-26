@@ -1,17 +1,19 @@
 package com.wordpress.nprogramming.terminal.command;
 
-import com.wordpress.nprogramming.terminal.core.LinuxCommandHandler;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
+import com.wordpress.nprogramming.terminal.core.LinuxCommand;
+import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 
-public final class Pwd implements LinuxCommandHandler {
+public final class Pwd implements LinuxCommand {
 
     @Override
-    public String commandName() {
+    public String name() {
         return "pwd";
     }
 
     @Override
-    public String process(TerminalContext context, String... args) {
-        return context.getWorkingDirectory();
+    public String execute(
+            FileSystemContext context, String... args) {
+
+        return context.workingDir();
     }
 }

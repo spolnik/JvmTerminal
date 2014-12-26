@@ -2,7 +2,7 @@ package com.wordpress.nprogramming.terminal.unit;
 
 import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
 import com.wordpress.nprogramming.terminal.command.Cd;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
+import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,67 +37,79 @@ public class CdCommandShould {
     }
 
     @Test
-    public void setWorkingDirectoryToAbsolutePathIfItIsPassed() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
+    public void setWorkingDirectoryToAbsolutePathIfItIsPassed()
+            throws Exception {
 
-        new Cd().process(terminalContext, WORKING_DIR);
+        FileSystemContext terminalContext = terminalContextMock();
 
-        verify(terminalContext).changeWorkingDirectory(WORKING_DIR);
+        new Cd().execute(terminalContext, WORKING_DIR);
+
+        verify(terminalContext).changeWorkingDir(WORKING_DIR);
     }
 
     @Test
-    public void setWorkingDirectoryToCompoundNameIfOnlyDirNameIsPassed() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
+    public void setWorkingDirectoryToCompoundNameIfOnlyDirNameIsPassed()
+            throws Exception {
 
-        new Cd().process(terminalContext, "new_dir");
+        FileSystemContext terminalContext = terminalContextMock();
 
-        verify(terminalContext).changeWorkingDirectory(WORKING_DIR + "/new_dir");
+        new Cd().execute(terminalContext, "new_dir");
+
+        verify(terminalContext).changeWorkingDir(WORKING_DIR + "/new_dir");
     }
 
     @Test
-    public void setWorkingDirectoryToParentIfDoubleDotsArePassed() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
+    public void setWorkingDirectoryToParentIfDoubleDotsArePassed()
+            throws Exception {
 
-        new Cd().process(terminalContext, "..");
+        FileSystemContext terminalContext = terminalContextMock();
 
-        verify(terminalContext).changeWorkingDirectory("/home");
+        new Cd().execute(terminalContext, "..");
+
+        verify(terminalContext).changeWorkingDir("/home");
     }
 
     @Test
-    public void setWorkingDirectoryToRootIfDoubleDotsArePassedManyTimes() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
+    public void setWorkingDirectoryToRootIfDoubleDotsArePassedManyTimes()
+            throws Exception {
 
-        new Cd().process(terminalContext, "../../../..");
+        FileSystemContext terminalContext = terminalContextMock();
 
-        verify(terminalContext).changeWorkingDirectory("/");
+        new Cd().execute(terminalContext, "../../../..");
+
+        verify(terminalContext).changeWorkingDir("/");
     }
 
     @Test
-    public void setWorkingDirectoryToTheSameDirIfDotIsPassed() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
+    public void setWorkingDirectoryToTheSameDirIfDotIsPassed()
+            throws Exception {
 
-        new Cd().process(terminalContext, ".");
+        FileSystemContext terminalContext = terminalContextMock();
 
-        verify(terminalContext).changeWorkingDirectory(WORKING_DIR);
+        new Cd().execute(terminalContext, ".");
+
+        verify(terminalContext).changeWorkingDir(WORKING_DIR);
     }
 
     @Test
-    public void setWorkingDirectoryToHomeDirIfNoArgumentsArePassed() throws Exception {
-        TerminalContext terminalContext = getTerminalContextMockWithFileSystemSetup();
-        when(terminalContext.getHomeDir()).thenReturn(WORKING_DIR);
+    public void setWorkingDirectoryToHomeDirIfNoArgumentsArePassed()
+            throws Exception {
 
-        new Cd().process(terminalContext);
+        FileSystemContext terminalContext = terminalContextMock();
+        when(terminalContext.homeDir()).thenReturn(WORKING_DIR);
 
-        verify(terminalContext).changeWorkingDirectory(WORKING_DIR);
+        new Cd().execute(terminalContext);
+
+        verify(terminalContext).changeWorkingDir(WORKING_DIR);
     }
 
-    private TerminalContext getTerminalContextMockWithFileSystemSetup() {
-        TerminalContext terminalContext = mock(TerminalContext.class);
+    private FileSystemContext terminalContextMock() {
+        FileSystemContext terminalContext = mock(FileSystemContext.class);
 
-        when(terminalContext.getWorkingDirectory())
+        when(terminalContext.workingDir())
                 .thenReturn(WORKING_DIR);
 
-        when(terminalContext.getFileSystem())
+        when(terminalContext.fileSystem())
                 .thenReturn(FileSystemBuilder.create()
                         .withWorkingDirectorySetTo(WORKING_DIR)
                         .build());
