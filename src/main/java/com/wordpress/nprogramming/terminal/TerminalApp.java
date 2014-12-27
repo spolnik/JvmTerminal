@@ -5,6 +5,8 @@ import com.google.common.base.Strings;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,13 +26,19 @@ public final class TerminalApp {
         prompt();
         String rawCommand = reader.readLine();
 
-        while (!Strings.isNullOrEmpty(rawCommand)) {
+        while (!isExitCommand(rawCommand)) {
             processLinuxCommand(rawCommand);
             prompt();
             rawCommand = reader.readLine();
         }
 
-        System.out.print("Terminal shutdown ...");
+        System.out.print("exit ...");
+    }
+
+    private boolean isExitCommand(String rawCommand) {
+
+        return Strings.isNullOrEmpty(rawCommand)
+                || rawCommand.equals("exit");
     }
 
     private void processLinuxCommand(String rawCommand) {
@@ -49,7 +57,19 @@ public final class TerminalApp {
     }
 
     private void prompt() {
-        System.out.printf("[user@localhost %s]$ ", currentDir());
+
+        System.out.printf("[%s@%s %s]$ ",
+                System.getProperty("user.name"),
+                machineName(),
+                currentDir());
+    }
+
+    private String machineName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "Unknown";
+        }
     }
 
     private String currentDir() {
