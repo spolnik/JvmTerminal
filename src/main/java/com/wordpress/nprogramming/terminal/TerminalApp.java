@@ -30,8 +30,7 @@ public final class TerminalApp {
             rawCommand = reader.readLine();
         }
 
-        System.out.print("Console is closing... Press <enter> ...");
-        reader.readLine();
+        System.out.print("Terminal shutdown ...");
     }
 
     private void processLinuxCommand(String rawCommand) {

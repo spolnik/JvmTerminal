@@ -5,6 +5,7 @@ import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandName;
 
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
@@ -25,8 +26,24 @@ public final class RmDir implements LinuxCommand {
 
         assert args != null;
         String dirName = args[0];
-        context.removeDirectory(dirName);
+
+        try {
+            context.removeDirectory(dirName);
+        } catch (DirectoryNotEmptyException e) {
+            return throwDirectoryNotEmptyException(dirName);
+        }
 
         return "";
+    }
+
+    private String throwDirectoryNotEmptyException(String dirName)
+            throws DirectoryNotEmptyException {
+
+        String errorMessage =
+                String.format(
+                        "rmdir: failed to remove ‘%s’: Directory not empty",
+                        dirName);
+
+        throw new DirectoryNotEmptyException(errorMessage);
     }
 }
