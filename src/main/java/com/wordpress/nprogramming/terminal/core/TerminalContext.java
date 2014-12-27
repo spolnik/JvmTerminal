@@ -10,12 +10,12 @@ import java.nio.file.Path;
 public final class TerminalContext implements FileSystemContext {
 
     private final FileSystem fileSystem;
-    private final String homeDirectory;
+    private final Path homeDirectory;
 
-    private String workingDirectory;
+    private Path workingDirectory;
 
     public TerminalContext(
-            FileSystem fileSystem, String workingDirectory) {
+            FileSystem fileSystem, Path workingDirectory) {
 
         this.fileSystem = fileSystem;
         this.workingDirectory = workingDirectory;
@@ -24,7 +24,7 @@ public final class TerminalContext implements FileSystemContext {
     }
 
     @Override
-    public String workingDir() {
+    public Path workingDir() {
         return workingDirectory;
     }
 
@@ -37,20 +37,28 @@ public final class TerminalContext implements FileSystemContext {
 
         if (Files.exists(path)) {
             throwIfNotDirectory(newPath, path);
-            this.workingDirectory = newPath;
+            this.workingDirectory = path;
         } else {
             throwFileNotFound(newPath);
         }
     }
 
     @Override
-    public FileSystem fileSystem() {
-        return fileSystem;
+    public String homeDir() {
+        return homeDirectory.toString();
     }
 
     @Override
-    public String homeDir() {
-        return homeDirectory;
+    public void createDirectory(String dirName) throws IOException {
+        Path path = fileSystem.getPath(dirName)
+                .toAbsolutePath().normalize();
+
+        fileSystem.provider().createDirectory(path);
+    }
+
+    @Override
+    public String getSeparator() {
+        return fileSystem.getSeparator();
     }
 
     private void throwFileNotFound(

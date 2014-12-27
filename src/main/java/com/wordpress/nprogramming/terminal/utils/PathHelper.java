@@ -6,8 +6,8 @@ import java.nio.file.Path;
 
 public final class PathHelper {
 
-    public static String normalize(Path path) {
-        return path.toAbsolutePath().normalize().toString();
+    public static Path normalize(Path path) {
+        return path.toAbsolutePath().normalize();
     }
 
     public static RunOn deleteIfExistsAndThenCreateDirectory(

@@ -1,20 +1,19 @@
 package com.wordpress.nprogramming.terminal.command;
 
-import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
+import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandName;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
-import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.aLinuxCommandName;
+import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
 import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 
 public class Cd implements LinuxCommand {
 
     @Override
     public LinuxCommandName name() {
-        return aLinuxCommandName("cd");
+        return asLinuxCommandName("cd");
     }
 
     @Override
@@ -36,7 +35,7 @@ public class Cd implements LinuxCommand {
     private String newWorkingDir(
             FileSystemContext context, String directoryName) {
 
-        return directoryName.startsWith(context.fileSystem().getSeparator())
+        return directoryName.startsWith(context.getSeparator())
                 ? directoryName
                 : buildNewWorkingDirectoryPath(context, directoryName);
     }
@@ -44,9 +43,6 @@ public class Cd implements LinuxCommand {
     private String buildNewWorkingDirectoryPath(
             FileSystemContext context, String path) {
 
-        Path workingDirectoryPath =
-                context.fileSystem().getPath(context.workingDir());
-
-        return normalize(workingDirectoryPath.resolve(path));
+        return normalize(context.workingDir().resolve(path)).toString();
     }
 }

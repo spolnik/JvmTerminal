@@ -12,7 +12,7 @@ public final class LinuxCommandName {
         return name;
     }
 
-    public static LinuxCommandName aLinuxCommandName(String name) {
+    public static LinuxCommandName asLinuxCommandName(String name) {
         return new LinuxCommandName(name);
     }
 }

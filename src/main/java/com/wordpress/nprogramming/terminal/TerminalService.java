@@ -10,6 +10,7 @@ import com.wordpress.nprogramming.terminal.core.TerminalContext;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +28,9 @@ public class TerminalService {
     }
 
     public TerminalService(FileSystem aFileSystem) {
-        String workingDirectory =
-                workingDir(aFileSystem);
 
         terminalContext =
-                new TerminalContext(aFileSystem, workingDirectory);
+                new TerminalContext(aFileSystem, workingDir(aFileSystem));
 
         linuxCommands.addAll(
                 Arrays.asList(
@@ -40,7 +39,7 @@ public class TerminalService {
                         new MkDir()));
     }
 
-    private String workingDir(FileSystem aFileSystem) {
+    private Path workingDir(FileSystem aFileSystem) {
         return normalize(aFileSystem.getPath("."));
     }
 
