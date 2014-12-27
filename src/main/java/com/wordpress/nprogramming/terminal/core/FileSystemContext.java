@@ -14,4 +14,6 @@ public interface FileSystemContext {
     Path asPath(String dir);
 
     void createDirectory(String dirName) throws IOException;
+
+    void removeDirectory(String dirName) throws IOException;
 }

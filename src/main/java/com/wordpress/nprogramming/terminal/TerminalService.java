@@ -1,9 +1,6 @@
 package com.wordpress.nprogramming.terminal;
 
-import com.wordpress.nprogramming.terminal.command.Cd;
-import com.wordpress.nprogramming.terminal.command.Ls;
-import com.wordpress.nprogramming.terminal.command.MkDir;
-import com.wordpress.nprogramming.terminal.command.Pwd;
+import com.wordpress.nprogramming.terminal.command.*;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 import com.wordpress.nprogramming.terminal.core.FileSystemService;
 import com.wordpress.nprogramming.terminal.core.LinuxCommand;
@@ -37,7 +34,8 @@ public class TerminalService {
                         new Pwd(),
                         new Cd(),
                         new MkDir(),
-                        new Ls()));
+                        new Ls(),
+                        new RmDir()));
     }
 
     private String workingDir(FileSystem aFileSystem) {

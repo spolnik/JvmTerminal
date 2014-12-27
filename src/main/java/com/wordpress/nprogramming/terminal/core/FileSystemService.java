@@ -21,7 +21,8 @@ public final class FileSystemService implements FileSystemContext {
 
         this.fileSystem = fileSystem;
 
-        Path normalizedPath = normalize(fileSystem.getPath(workingDirectory));
+        Path normalizedPath =
+                normalize(fileSystem.getPath(workingDirectory));
 
         this.workingDirectory = normalizedPath;
         homeDirectory = normalizedPath;
@@ -51,7 +52,10 @@ public final class FileSystemService implements FileSystemContext {
 
     @Override
     public Path asPath(String dir) {
-        return normalize(this.fileSystem.getPath(workingDirectory.toString()).resolve(dir));
+        return normalize(
+                fileSystem.getPath(workingDirectory.toString())
+                        .resolve(dir)
+        );
     }
 
     @Override
@@ -60,6 +64,14 @@ public final class FileSystemService implements FileSystemContext {
 
         Path path = asPath(dirName);
         fileSystem.provider().createDirectory(path);
+    }
+
+    @Override
+    public void removeDirectory(String dirName)
+            throws IOException {
+
+        Path path = asPath(dirName);
+        fileSystem.provider().deleteIfExists(path);
     }
 
     private void throwFileNotFound(

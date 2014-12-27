@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
 
-public class Ls implements LinuxCommand {
+public final class Ls implements LinuxCommand {
+
     @Override
     public LinuxCommandName name() {
         return asLinuxCommandName("ls");

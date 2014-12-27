@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
 
-public class Cd implements LinuxCommand {
+public final class Cd implements LinuxCommand {
 
     @Override
     public LinuxCommandName name() {
