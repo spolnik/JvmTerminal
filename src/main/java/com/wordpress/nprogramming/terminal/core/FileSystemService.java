@@ -7,20 +7,24 @@ import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 
-public final class TerminalContext implements FileSystemContext {
+import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
+
+public final class FileSystemService implements FileSystemContext {
 
     private final FileSystem fileSystem;
     private final Path homeDirectory;
 
     private Path workingDirectory;
 
-    public TerminalContext(
-            FileSystem fileSystem, Path workingDirectory) {
+    public FileSystemService(
+            FileSystem fileSystem, String workingDirectory) {
 
         this.fileSystem = fileSystem;
-        this.workingDirectory = workingDirectory;
 
-        homeDirectory = workingDirectory;
+        Path normalizedPath = asPath(workingDirectory);
+
+        this.workingDirectory = normalizedPath;
+        homeDirectory = normalizedPath;
     }
 
     @Override
@@ -29,51 +33,47 @@ public final class TerminalContext implements FileSystemContext {
     }
 
     @Override
-    public void changeWorkingDir(
-            String newPath)
+    public void changeWorkingDir(Path newPath)
             throws IOException {
 
-        Path path = this.fileSystem.getPath(newPath);
-
-        if (Files.exists(path)) {
-            throwIfNotDirectory(newPath, path);
-            this.workingDirectory = path;
+        if (Files.exists(newPath)) {
+            throwIfNotDirectory(newPath);
+            this.workingDirectory = newPath;
         } else {
             throwFileNotFound(newPath);
         }
     }
 
     @Override
-    public String homeDir() {
-        return homeDirectory.toString();
+    public Path homeDir() {
+        return homeDirectory;
     }
 
     @Override
-    public void createDirectory(String dirName) throws IOException {
-        Path path = fileSystem.getPath(dirName)
-                .toAbsolutePath().normalize();
+    public Path asPath(String dir) {
+        return normalize(this.fileSystem.getPath(dir));
+    }
 
+    @Override
+    public void createDirectory(String dirName)
+            throws IOException {
+
+        Path path = asPath(dirName);
         fileSystem.provider().createDirectory(path);
     }
 
-    @Override
-    public String getSeparator() {
-        return fileSystem.getSeparator();
-    }
-
     private void throwFileNotFound(
-            String workingDirectory)
+            Path workingDirectory)
             throws FileNotFoundException {
 
         String errorMessage =
                 String.format("cd: %s: No such file or directory",
-                        workingDirectory);
+                        workingDirectory.toString());
 
         throw new FileNotFoundException(errorMessage);
     }
 
-    private void throwIfNotDirectory(
-            String workingDirectory, Path path)
+    private void throwIfNotDirectory(Path path)
             throws NotDirectoryException {
 
         if (Files.isDirectory(path)) {
@@ -82,7 +82,7 @@ public final class TerminalContext implements FileSystemContext {
 
         String errorMessage =
                 String.format("cd: %s: Not a directory",
-                        workingDirectory);
+                        path.toString());
 
         throw new NotDirectoryException(errorMessage);
     }

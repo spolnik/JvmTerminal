@@ -2,55 +2,54 @@ package com.wordpress.nprogramming.terminal.unit;
 
 import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
 import com.wordpress.nprogramming.terminal.command.Cd;
+import com.wordpress.nprogramming.terminal.command.MkDir;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
+import com.wordpress.nprogramming.terminal.core.FileSystemService;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static com.wordpress.nprogramming.terminal.utils.PathHelper.deleteIfExistsAndThenCreateDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CdCommandSpec {
 
-    private static final Path WORKING_DIR = Paths.get("/home/path");
+    private static final String WORKING_DIR = "/home/path";
 
     @Test
     public void setWorkingDirectoryToAbsolutePathIfItIsPassed()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext, WORKING_DIR.toString());
+        new Cd().execute(context, WORKING_DIR);
 
-        assertThat(terminalContext.workingDir().toString())
-                .isEqualTo(WORKING_DIR.toString());
+        assertThat(context.workingDir().toString())
+                .isEqualTo(WORKING_DIR);
     }
 
     @Test
     public void setWorkingDirectoryToCompoundNameIfOnlyDirNameIsPassed()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext, "new_dir");
+        new MkDir().execute(context, "new_dir");
+        new Cd().execute(context, "new_dir");
 
-        assertThat(terminalContext.workingDir().toString())
-                .isEqualTo(WORKING_DIR.toString() + "/new_dir");
+        assertThat(context.workingDir().toString())
+                .isEqualTo(WORKING_DIR + "/new_dir");
     }
 
     @Test
     public void setWorkingDirectoryToParentIfDoubleDotsArePassed()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext, "..");
+        new Cd().execute(context, "..");
 
-        assertThat(terminalContext.workingDir().toString())
+        assertThat(context.workingDir().toString())
                 .isEqualTo("/home");
     }
 
@@ -58,11 +57,11 @@ public class CdCommandSpec {
     public void setWorkingDirectoryToRootIfDoubleDotsArePassedManyTimes()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext, "../../../..");
+        new Cd().execute(context, "../../../..");
 
-        assertThat(terminalContext.workingDir().toString())
+        assertThat(context.workingDir().toString())
                 .isEqualTo("/");
     }
 
@@ -70,34 +69,33 @@ public class CdCommandSpec {
     public void setWorkingDirectoryToTheSameDirIfDotIsPassed()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext, ".");
+        new Cd().execute(context, ".");
 
-        assertThat(terminalContext.workingDir().toString())
-                .isEqualTo(WORKING_DIR.toString());
+        assertThat(context.workingDir().toString())
+                .isEqualTo(WORKING_DIR);
     }
 
     @Test
     public void setWorkingDirectoryToHomeDirIfNoArgumentsArePassed()
             throws Exception {
 
-        FileSystemContext terminalContext = terminalContext();
+        FileSystemContext context = fileSystemContext();
 
-        new Cd().execute(terminalContext);
+        new Cd().execute(context, "..");
+        new Cd().execute(context);
 
-        assertThat(terminalContext.workingDir().toString())
-                .isEqualTo(WORKING_DIR.toString());
+        assertThat(context.workingDir().toString())
+                .isEqualTo(WORKING_DIR);
     }
 
-    private FileSystemContext terminalContext() throws IOException {
+    private FileSystemContext fileSystemContext() throws IOException {
 
         FileSystem fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(WORKING_DIR.toString())
+                .withWorkingDirectorySetTo(WORKING_DIR)
                 .build();
 
-        deleteIfExistsAndThenCreateDirectory("new_dir").runOn(fileSystem);
-
-        return new TerminalContext(fileSystem, WORKING_DIR);
+        return new FileSystemService(fileSystem, WORKING_DIR);
     }
 }

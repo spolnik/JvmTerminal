@@ -5,9 +5,9 @@ import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandName;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
-import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 
 public class Cd implements LinuxCommand {
 
@@ -23,26 +23,12 @@ public class Cd implements LinuxCommand {
 
         if (args.length == 0) {
             context.changeWorkingDir(context.homeDir());
-            return "";
+        } else {
+            Path workingDirectory = context.asPath(args[0]);
+            context.changeWorkingDir(workingDirectory);
         }
 
-        String workingDirectory = newWorkingDir(context, args[0]);
-
-        context.changeWorkingDir(workingDirectory);
         return "";
     }
 
-    private String newWorkingDir(
-            FileSystemContext context, String directoryName) {
-
-        return directoryName.startsWith(context.getSeparator())
-                ? directoryName
-                : buildNewWorkingDirectoryPath(context, directoryName);
-    }
-
-    private String buildNewWorkingDirectoryPath(
-            FileSystemContext context, String path) {
-
-        return normalize(context.workingDir().resolve(path)).toString();
-    }
 }

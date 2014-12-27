@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
-import static com.wordpress.nprogramming.terminal.utils.PathHelper.deleteIfExistsAndThenCreateDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MkDirCommandBehaviour {
@@ -36,7 +35,6 @@ public class MkDirCommandBehaviour {
                 .withWorkingDirectorySetTo(path)
                 .build();
 
-        deleteIfExistsAndThenCreateDirectory(path).runOn(fileSystem);
         terminal = new TerminalService(fileSystem);
     }
 

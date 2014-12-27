@@ -20,9 +20,7 @@ public class PwdCommandSpec {
             throws Exception {
 
         FileSystemContext terminalContext = mock(FileSystemContext.class);
-
-        when(terminalContext.workingDir())
-                .thenReturn(WORKING_DIR);
+        when(terminalContext.workingDir()).thenReturn(WORKING_DIR);
 
         String result = new Pwd().execute(terminalContext);
 

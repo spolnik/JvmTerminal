@@ -9,9 +9,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Path;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
-import static com.wordpress.nprogramming.terminal.utils.PathHelper.deleteIfExistsAndThenCreateDirectory;
+import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CdCommandBehaviour {
@@ -35,7 +36,6 @@ public class CdCommandBehaviour {
                 .withWorkingDirectorySetTo(path)
                 .build();
 
-        deleteIfExistsAndThenCreateDirectory(path).runOn(fileSystem);
         terminal = new TerminalService(fileSystem);
     }
 
@@ -55,5 +55,22 @@ public class CdCommandBehaviour {
 
         assertThat(terminal.processLinuxCommand("pwd"))
                 .isEqualToIgnoringCase(path);
+    }
+
+    private static RunOn deleteIfExistsAndThenCreateDirectory(
+            String dirName)
+            throws IOException {
+
+        return fileSystem -> {
+
+            Path path = normalize(fileSystem.getPath(dirName));
+
+            fileSystem.provider().deleteIfExists(path);
+            fileSystem.provider().createDirectory(path);
+        };
+    }
+
+    private interface RunOn {
+        void runOn(FileSystem fileSystem) throws IOException;
     }
 }

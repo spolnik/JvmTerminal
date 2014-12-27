@@ -6,12 +6,12 @@ import java.nio.file.Path;
 public interface FileSystemContext {
     Path workingDir();
 
-    void changeWorkingDir(String workingDirectory)
+    void changeWorkingDir(Path workingDirectory)
             throws IOException;
 
-    String homeDir();
+    Path homeDir();
+
+    Path asPath(String dir);
 
     void createDirectory(String dirName) throws IOException;
-
-    String getSeparator();
 }

@@ -4,13 +4,12 @@ import com.wordpress.nprogramming.terminal.command.Cd;
 import com.wordpress.nprogramming.terminal.command.MkDir;
 import com.wordpress.nprogramming.terminal.command.Pwd;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
+import com.wordpress.nprogramming.terminal.core.FileSystemService;
 import com.wordpress.nprogramming.terminal.core.LinuxCommand;
-import com.wordpress.nprogramming.terminal.core.TerminalContext;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,7 @@ import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 public class TerminalService {
 
     private final List<LinuxCommand> linuxCommands = new ArrayList<>();
-    private final FileSystemContext terminalContext;
+    private final FileSystemContext fileSystemContext;
 
     public TerminalService() {
         this(FileSystems.getDefault());
@@ -29,8 +28,8 @@ public class TerminalService {
 
     public TerminalService(FileSystem aFileSystem) {
 
-        terminalContext =
-                new TerminalContext(aFileSystem, workingDir(aFileSystem));
+        fileSystemContext =
+                new FileSystemService(aFileSystem, workingDir(aFileSystem));
 
         linuxCommands.addAll(
                 Arrays.asList(
@@ -39,8 +38,8 @@ public class TerminalService {
                         new MkDir()));
     }
 
-    private Path workingDir(FileSystem aFileSystem) {
-        return normalize(aFileSystem.getPath("."));
+    private String workingDir(FileSystem aFileSystem) {
+        return normalize(aFileSystem.getPath(".")).toString();
     }
 
     public String processLinuxCommand(
@@ -49,12 +48,13 @@ public class TerminalService {
 
         String[] linuxCommandParts =
                 rawCommand.split(" ");
+
         Optional<LinuxCommand> linuxCommand =
                 linuxCommand(linuxCommandParts[0]);
 
         if (linuxCommand.isPresent()) {
             return linuxCommand.get().execute(
-                    terminalContext,
+                    fileSystemContext,
                     linuxCommandArguments(linuxCommandParts));
         }
 

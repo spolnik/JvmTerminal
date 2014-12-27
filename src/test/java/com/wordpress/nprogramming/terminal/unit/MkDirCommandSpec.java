@@ -21,7 +21,9 @@ public class MkDirCommandSpec {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throwsInvalidArgumentExceptionIfNoArgumentIsPassed() throws Exception {
+    public void throwsInvalidArgumentExceptionIfNoArgumentIsPassed()
+            throws Exception {
+
         FileSystemContext fileSystemContext = mock(FileSystemContext.class);
 
         new MkDir().execute(fileSystemContext);

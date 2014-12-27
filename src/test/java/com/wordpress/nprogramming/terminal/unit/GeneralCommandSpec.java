@@ -16,6 +16,7 @@ public class GeneralCommandSpec {
 
     @Test
     public void handleRightCommand() throws Exception {
+
         boolean canHandle =
                 new GeneralCommandForTest()
                         .canHandle(commandName);
@@ -25,6 +26,7 @@ public class GeneralCommandSpec {
 
     @Test
     public void beCaseSensitiveRegardingHandlingRightCommand() {
+
         boolean canHandle =
                 new GeneralCommandForTest()
                         .canHandle(commandName.toUpperCase());
@@ -34,6 +36,7 @@ public class GeneralCommandSpec {
 
     @Test
     public void notHandleOtherCommands() throws Exception {
+
         boolean canHandle =
                 new GeneralCommandForTest()
                         .canHandle("pwd");
@@ -43,6 +46,7 @@ public class GeneralCommandSpec {
 
     @Test
     public void beNullProof() throws Exception {
+
         boolean canHandle =
                 new GeneralCommandForTest()
                         .canHandle(null);
