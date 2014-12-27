@@ -9,20 +9,21 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.util.Arrays;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MkDirCommandBehaviour {
+public class LsCommandBehaviour {
 
     private TerminalService terminal;
-    private String dirName;
+    private String result;
 
     @Test
-    public void mkDirCommandAcceptanceTests() throws Exception {
+    public void lsCommandAcceptanceTests() throws Exception {
         aBehaviouralTestRunner()
                 .usingStepsFrom(this)
-                .withStory("mkdir_command_creates_new_directory.story")
+                .withStory("ls_command_displays_current_directory_content.story")
                 .run();
     }
 
@@ -37,28 +38,24 @@ public class MkDirCommandBehaviour {
         terminal = new TerminalService(fileSystem);
     }
 
-    @When("I run mkdir $dirName command")
-    public void whenIRunMkdirCommandWithDirNameEqualsTo(
-            String aDirName)
+    @Given("new three new directories created with names $names")
+    public void givenNewThreeNewDirectoriesCreatedWithNames(String names)
             throws IOException {
 
-        dirName = aDirName;
-        terminal.processLinuxCommand("mkdir " + aDirName);
+        for(String name : Arrays.asList(names.split(" "))) {
+            terminal.processLinuxCommand("mkdir " + name);
+        }
     }
 
-    @Then("changing directory to newly created one should success")
-    public void thenChangingDirectoryToNewlyCreatedOneShouldSuccess()
+    @When("I run ls command")
+    public void whenIRunLsCommand()
             throws IOException {
 
-        terminal.processLinuxCommand("cd " + dirName);
+        result = terminal.processLinuxCommand("ls");
     }
 
-    @Then("pwd command should return string equal to $path")
-    public void thenPwdCommandShouldReturnStringEqualTo(
-            String path)
-            throws IOException {
-
-        assertThat(terminal.processLinuxCommand("pwd"))
-                .isEqualTo(path);
+    @Then("it displays all newly created directories as $output")
+    public void thenItDisplaysAllNewlyCreatedDirectoriesAs(String output) {
+        assertThat(result).isEqualTo(output);
     }
 }
