@@ -38,8 +38,8 @@ public class LsCommandBehaviour {
         terminal = new TerminalService(fileSystem);
     }
 
-    @Given("new three new directories created with names $names")
-    public void givenNewThreeNewDirectoriesCreatedWithNames(String names)
+    @Given("new directories created with names $names")
+    public void givenNewDirectoriesCreatedWithNames(String names)
             throws IOException {
 
         for(String name : Arrays.asList(names.split(" "))) {
@@ -54,7 +54,14 @@ public class LsCommandBehaviour {
         result = terminal.processLinuxCommand("ls");
     }
 
-    @Then("it displays all newly created directories as $output")
+    @When("I run ls $dir command")
+    public void whenIRunLsCommandWithDirSetTo(String dir)
+            throws IOException {
+
+        result = terminal.processLinuxCommand("ls " + dir);
+    }
+
+    @Then("it displays output as $output")
     public void thenItDisplaysAllNewlyCreatedDirectoriesAs(String output) {
         assertThat(result).isEqualTo(output);
     }

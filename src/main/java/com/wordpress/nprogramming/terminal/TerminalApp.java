@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class TerminalApp {
@@ -57,8 +58,12 @@ public final class TerminalApp {
             String workingDir =
                     terminal.processLinuxCommand("pwd");
 
-            return Paths.get(workingDir)
-                    .getFileName().toString();
+            Path path = Paths.get(workingDir);
+
+            if (path.getRoot().equals(path))
+                return path.toString();
+
+            return path.getFileName().toString();
 
         } catch (IOException e) {
             e.printStackTrace();

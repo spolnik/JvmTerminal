@@ -21,7 +21,7 @@ public final class FileSystemService implements FileSystemContext {
 
         this.fileSystem = fileSystem;
 
-        Path normalizedPath = asPath(workingDirectory);
+        Path normalizedPath = normalize(fileSystem.getPath(workingDirectory));
 
         this.workingDirectory = normalizedPath;
         homeDirectory = normalizedPath;
@@ -51,7 +51,7 @@ public final class FileSystemService implements FileSystemContext {
 
     @Override
     public Path asPath(String dir) {
-        return normalize(this.fileSystem.getPath(dir));
+        return normalize(this.fileSystem.getPath(workingDirectory.toString()).resolve(dir));
     }
 
     @Override

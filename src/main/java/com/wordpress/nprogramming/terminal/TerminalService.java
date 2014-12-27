@@ -1,6 +1,7 @@
 package com.wordpress.nprogramming.terminal;
 
 import com.wordpress.nprogramming.terminal.command.Cd;
+import com.wordpress.nprogramming.terminal.command.Ls;
 import com.wordpress.nprogramming.terminal.command.MkDir;
 import com.wordpress.nprogramming.terminal.command.Pwd;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
@@ -35,7 +36,8 @@ public class TerminalService {
                 Arrays.asList(
                         new Pwd(),
                         new Cd(),
-                        new MkDir()));
+                        new MkDir(),
+                        new Ls()));
     }
 
     private String workingDir(FileSystem aFileSystem) {
@@ -50,7 +52,7 @@ public class TerminalService {
                 rawCommand.split(" ");
 
         Optional<LinuxCommand> linuxCommand =
-                linuxCommand(linuxCommandParts[0]);
+                findLinuxCommand(linuxCommandParts[0]);
 
         if (linuxCommand.isPresent()) {
             return linuxCommand.get().execute(
@@ -61,7 +63,7 @@ public class TerminalService {
         return "Invalid Command!";
     }
 
-    private Optional<LinuxCommand> linuxCommand(
+    private Optional<LinuxCommand> findLinuxCommand(
             String linuxCommandName) {
 
         return linuxCommands.stream()
