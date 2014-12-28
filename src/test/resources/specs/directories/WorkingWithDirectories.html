@@ -1,0 +1,43 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<link href="../../concordion.css" rel="stylesheet" type="text/css" />
+<body>
+
+    <h1>JvmTerminal - working with directories!</h1>
+
+    <p>
+    	After a user runs terminal, he creates new directory
+        and display content of working directory to see newly created directory.
+
+        Then he goes into it and displays working directory path.
+
+        Later he goes back to parent directory,
+        he removes newly created directory
+        and finally list content to see if his directory was removed.
+    </p>
+
+    <div class="example">
+
+		<h3>Example</h3>
+		
+        <p>
+            When user opens terminal
+            he creates new directory <b concordion:set="#dirName">dir_name</b>,
+            <span concordion:execute="createDirectory(#dirName)" />
+            then he displays content to confirm it was <b concordion:assertEquals="isDirectoryCreated(#dirName)">created</b>.
+        </p>
+
+        <p>
+            Then he goes to newly created directory <span concordion:execute="changeWorkingDirectory(#dirName)" />
+            and displays working directory path which should ends with <b concordion:assertEquals="pwdCommandEndsWith()">dir_name</b>.
+        </p>
+
+        <p>
+            Later he goes back to parent<span concordion:execute="goToParentDir()" />,
+            he removes newly created directory <span concordion:execute="removeDirectory(#dirName)" />
+            and finally he lists content to see if the directory was <b concordion:assertEquals="isRemoved(#dirName)">removed</b>.
+        </p>
+
+    </div>
+
+</body>
+</html>
