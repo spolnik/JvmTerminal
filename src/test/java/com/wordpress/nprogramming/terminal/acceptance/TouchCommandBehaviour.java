@@ -15,18 +15,16 @@ import java.nio.file.Path;
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RmDirCommandBehaviour {
+public class TouchCommandBehaviour {
 
     private TerminalService terminal;
     private FileSystem fileSystem;
 
     @Test
-    public void rmDirCommandAcceptanceTests()
-            throws Exception {
-
+    public void touchCommandAcceptanceTests() throws Exception {
         aBehaviouralTestRunner()
                 .usingStepsFrom(this)
-                .withStory("rmdir_command_removes_empty_directory.story")
+                .withStory("touch_command_creates_new_empty_file.story")
                 .run();
     }
 
@@ -41,25 +39,18 @@ public class RmDirCommandBehaviour {
         terminal = new TerminalService(fileSystem);
     }
 
-    @Given("newly created $dir directory")
-    public void givenNewlyCreatedDirectoryWithName(String dir)
+    @When("I run touch $fileName command")
+    public void whenIRunTouchCommandWithArgumentSetTo(String fileName)
             throws IOException {
 
-        terminal.processLinuxCommand("mkdir " + dir);
+        terminal.processLinuxCommand("touch " + fileName);
     }
 
-    @When("I run rmdir $dir command")
-    public void whenIRunRmdirCommandWithArgument(String dir)
-            throws IOException {
+    @Then("I am able to see that $fullPath file is created")
+    public void thenIAmAbleToSeeThatFileIsCreatedWithName(
+            String fullPath) {
 
-        terminal.processLinuxCommand("rmdir " + dir);
-    }
-
-    @Then("I am able to confirm $path directory is removed")
-    public void thenIAmAbleToConfirmThatDirectoryIsRemoved(
-            String path) {
-
-        Path removedDirPath = fileSystem.getPath(path);
-        assertThat(Files.exists(removedDirPath)).isFalse();
+        Path filePath = fileSystem.getPath(fullPath);
+        assertThat(Files.exists(filePath)).isTrue();
     }
 }

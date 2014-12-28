@@ -8,6 +8,7 @@ import org.jbehave.core.annotations.When;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,10 +31,11 @@ public class PwdCommandBehaviour {
             String path)
             throws IOException {
 
-        terminal = new TerminalService(
-                FileSystemBuilder.create()
-                        .withWorkingDirectorySetTo(path)
-                        .build());
+        final FileSystem fileSystem = FileSystemBuilder.create()
+                .withWorkingDirectorySetTo(path)
+                .build();
+
+        terminal = new TerminalService(fileSystem);
     }
 
     @When("I run pwd command to print working directory")
