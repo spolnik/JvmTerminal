@@ -2,17 +2,21 @@ package com.wordpress.nprogramming.terminal;
 
 import com.google.common.base.Strings;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 public final class TerminalApp {
 
     private final TerminalService terminal = new TerminalService();
+    private final Scanner scanner;
+
+    public TerminalApp() {
+        this.scanner = new Scanner(System.in);
+    }
 
     public static void main(String[] args) throws IOException {
         TerminalApp terminalApp = new TerminalApp();
@@ -20,16 +24,14 @@ public final class TerminalApp {
     }
 
     private void run() throws IOException {
-        final BufferedReader reader =
-                new BufferedReader(new InputStreamReader(System.in));
 
         prompt();
-        String rawCommand = reader.readLine();
+        String rawCommand = scanner.nextLine();
 
         while (!isExitCommand(rawCommand)) {
             processLinuxCommand(rawCommand);
             prompt();
-            rawCommand = reader.readLine();
+            rawCommand = scanner.nextLine();
         }
 
         System.out.print("exit ...");

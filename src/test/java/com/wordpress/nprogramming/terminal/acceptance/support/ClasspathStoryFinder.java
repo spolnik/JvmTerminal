@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static org.apache.commons.io.FileUtils.listFiles;
 
 public final class ClasspathStoryFinder {
+
     private static final Logger LOG =
             LoggerFactory.getLogger(ClasspathStoryFinder.class);
 
