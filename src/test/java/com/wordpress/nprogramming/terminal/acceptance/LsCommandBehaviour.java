@@ -1,14 +1,12 @@
 package com.wordpress.nprogramming.terminal.acceptance;
 
-import com.wordpress.nprogramming.terminal.TerminalService;
-import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
+import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.util.Arrays;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
@@ -16,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LsCommandBehaviour {
 
-    private TerminalService terminal;
+    private TerminalServiceDriver driver;
     private String result;
 
     @Test
@@ -31,11 +29,7 @@ public class LsCommandBehaviour {
     public void givenATerminalServiceWithWorkingDirectorySetTo(
             String path) {
 
-        final FileSystem fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(path)
-                .build();
-
-        terminal = new TerminalService(fileSystem);
+        driver = new TerminalServiceDriver(path);
     }
 
     @Given("new directories created with names $names")
@@ -43,7 +37,7 @@ public class LsCommandBehaviour {
             throws IOException {
 
         for(String name : Arrays.asList(names.split(" "))) {
-            terminal.processLinuxCommand("mkdir " + name);
+            driver.processLinuxCommand("mkdir " + name);
         }
     }
 
@@ -51,14 +45,14 @@ public class LsCommandBehaviour {
     public void whenIRunLsCommand()
             throws IOException {
 
-        result = terminal.processLinuxCommand("ls");
+        result = driver.processLinuxCommand("ls");
     }
 
     @When("I run ls $dir command")
     public void whenIRunLsCommandWithDirSetTo(String dir)
             throws IOException {
 
-        result = terminal.processLinuxCommand("ls " + dir);
+        result = driver.processLinuxCommand("ls " + dir);
     }
 
     @Then("it displays output as $output")

@@ -1,24 +1,19 @@
 package com.wordpress.nprogramming.terminal.acceptance;
 
-import com.wordpress.nprogramming.terminal.TerminalService;
-import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
+import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
-import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CdCommandBehaviour {
 
-    private TerminalService terminal;
-    private FileSystem fileSystem;
+    private TerminalServiceDriver driver;
 
     @Test
     public void cdCommandAcceptanceTests() throws Exception {
@@ -32,11 +27,7 @@ public class CdCommandBehaviour {
     public void givenTerminalWhichHasWorkingDirectorySetTo(String path)
             throws IOException {
 
-        fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(path)
-                .build();
-
-        terminal = new TerminalService(fileSystem);
+        driver = new TerminalServiceDriver(path);
     }
 
     @When("I run cd $dirName command")
@@ -44,8 +35,8 @@ public class CdCommandBehaviour {
             String dirName)
             throws IOException {
 
-        deleteIfExistsAndThenCreateDirectory(dirName).runOn(fileSystem);
-        terminal.processLinuxCommand("cd " + dirName);
+        driver.makeSureThatDirectoryExists(dirName);
+        driver.processLinuxCommand("cd " + dirName);
     }
 
     @Then("pwd command should return string equal to $path")
@@ -53,24 +44,7 @@ public class CdCommandBehaviour {
             String path)
             throws IOException {
 
-        assertThat(terminal.processLinuxCommand("pwd"))
+        assertThat(driver.processLinuxCommand("pwd"))
                 .isEqualToIgnoringCase(path);
-    }
-
-    private static RunOn deleteIfExistsAndThenCreateDirectory(
-            String dirName)
-            throws IOException {
-
-        return fileSystem -> {
-
-            Path path = normalize(fileSystem.getPath(dirName));
-
-            fileSystem.provider().deleteIfExists(path);
-            fileSystem.provider().createDirectory(path);
-        };
-    }
-
-    private interface RunOn {
-        void runOn(FileSystem fileSystem) throws IOException;
     }
 }

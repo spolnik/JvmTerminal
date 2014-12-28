@@ -1,21 +1,19 @@
 package com.wordpress.nprogramming.terminal.acceptance;
 
-import com.wordpress.nprogramming.terminal.TerminalService;
-import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
+import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PwdCommandBehaviour {
 
-    private TerminalService terminal;
+    private TerminalServiceDriver driver;
     private String result;
 
     @Test
@@ -31,18 +29,14 @@ public class PwdCommandBehaviour {
             String path)
             throws IOException {
 
-        final FileSystem fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(path)
-                .build();
-
-        terminal = new TerminalService(fileSystem);
+        driver = new TerminalServiceDriver(path);
     }
 
     @When("I run pwd command to print working directory")
     public void whenIRunPwdCommandToPrintWorkingDirectory()
             throws IOException {
 
-        result = terminal.processLinuxCommand("pwd");
+        result = driver.processLinuxCommand("pwd");
     }
 
     @Then("it should return string equal to $path")

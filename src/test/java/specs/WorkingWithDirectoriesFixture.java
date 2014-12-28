@@ -1,5 +1,6 @@
 package specs;
 
+import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 

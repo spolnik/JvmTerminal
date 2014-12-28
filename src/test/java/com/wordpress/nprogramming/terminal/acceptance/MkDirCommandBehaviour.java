@@ -1,21 +1,19 @@
 package com.wordpress.nprogramming.terminal.acceptance;
 
-import com.wordpress.nprogramming.terminal.TerminalService;
-import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
+import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 
 import static com.wordpress.nprogramming.terminal.acceptance.support.BehaviouralTestEmbedder.aBehaviouralTestRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MkDirCommandBehaviour {
 
-    private TerminalService terminal;
+    private TerminalServiceDriver driver;
     private String dirName;
 
     @Test
@@ -30,11 +28,7 @@ public class MkDirCommandBehaviour {
     public void givenATerminalServiceWithWorkingDirectorySetTo(
             String path) {
 
-        final FileSystem fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(path)
-                .build();
-
-        terminal = new TerminalService(fileSystem);
+        driver = new TerminalServiceDriver(path);
     }
 
     @When("I run mkdir $dirName command")
@@ -43,14 +37,14 @@ public class MkDirCommandBehaviour {
             throws IOException {
 
         dirName = aDirName;
-        terminal.processLinuxCommand("mkdir " + aDirName);
+        driver.processLinuxCommand("mkdir " + aDirName);
     }
 
     @Then("changing directory to newly created one should success")
     public void thenChangingDirectoryToNewlyCreatedOneShouldSuccess()
             throws IOException {
 
-        terminal.processLinuxCommand("cd " + dirName);
+        driver.processLinuxCommand("cd " + dirName);
     }
 
     @Then("pwd command should return string equal to $path")
@@ -58,7 +52,7 @@ public class MkDirCommandBehaviour {
             String path)
             throws IOException {
 
-        assertThat(terminal.processLinuxCommand("pwd"))
+        assertThat(driver.processLinuxCommand("pwd"))
                 .isEqualTo(path);
     }
 }

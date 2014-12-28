@@ -35,7 +35,8 @@ public class TerminalService {
                         new Cd(),
                         new MkDir(),
                         new Ls(),
-                        new RmDir()));
+                        new RmDir(),
+                        new Touch()));
     }
 
     private String workingDir(FileSystem aFileSystem) {
