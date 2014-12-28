@@ -14,62 +14,43 @@ public class WorkingWithDirectoriesFixture {
 
     private final TerminalService terminal = new TerminalService();
 
-    public void goToParentDir()
+    public String isDirectoryCreated(String dirContent, String dirName)
             throws IOException {
 
-        terminal.processLinuxCommand("cd ..");
-    }
-
-    public void createDirectory(String dirName)
-            throws IOException {
-
-        terminal.processLinuxCommand("mkdir " + dirName);
-    }
-
-    public String isDirectoryCreated(String dirName)
-            throws IOException {
-
-        return listDirContent().contains(dirName)
+        return asList(dirContent).contains(dirName)
                 ? "created"
                 : "not created";
     }
 
-    public void changeWorkingDirectory(String dirName)
+    public String isRemoved(String dirContent, String dirName)
             throws IOException {
 
-        terminal.processLinuxCommand("cd " + dirName);
-    }
-
-    public String workingDirectoryName()
-            throws IOException {
-
-        String workingDirectory = printWorkingDirectory();
-        return Paths.get(workingDirectory).getFileName().toString();
-    }
-
-    public void removeDirectory(String dirName)
-            throws IOException {
-
-        terminal.processLinuxCommand("rmdir " + dirName);
-    }
-
-    public String isRemoved(String dirName)
-            throws IOException {
-
-        return listDirContent().contains(dirName)
+        return asList(dirContent).contains(dirName)
                 ? "not removed"
                 : "removed";
     }
 
-    private List<String> listDirContent()
+    public String directoryName(String fullPath)
             throws IOException {
 
-        return Arrays.asList(terminal.processLinuxCommand("ls").split(" "));
+        return Paths.get(fullPath).getFileName().toString();
     }
 
-    private String printWorkingDirectory()
+    public void runCommand(String rawCommand)
             throws IOException {
 
-        return terminal.processLinuxCommand("pwd");
+        terminal.processLinuxCommand(rawCommand);
+    }
+
+    public String runCommandWithResult(String rawCommand)
+            throws IOException {
+
+        return terminal.processLinuxCommand(rawCommand);
+    }
+
+    private List<String> asList(String text)
+            throws IOException {
+
+        return Arrays.asList(text.split(" "));
     }
 }

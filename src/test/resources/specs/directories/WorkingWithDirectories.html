@@ -20,26 +20,24 @@
 		<h3>Creating and removing new directory</h3>
 		
         <p>
-            When user opens terminal
-            he creates new directory <b concordion:set="#dirName">dir_name</b>,
-            <span concordion:execute="createDirectory(#dirName)" />
-            then he lists content of working directory to confirm it was
-            <b concordion:assertEquals="isDirectoryCreated(#dirName)">created</b>.
+            When user opens terminal he runs command <b concordion:execute="runCommand(#TEXT)">mkdir dir_name</b>
+            to create a new directory, then using <b concordion:execute="#dirContent = runCommandWithResult(#TEXT)">ls</b>
+            command he lists content of working directory to confirm <b concordion:set="#dirName">dir_name</b>
+            directory was <b concordion:assertEquals="isDirectoryCreated(#dirContent, #dirName)">created</b>.
         </p>
 
         <p>
-            Then he goes to newly created directory
-            <span concordion:execute="changeWorkingDirectory(#dirName)" />
-            and displays working directory path which should ends with
-            <b concordion:assertEquals="workingDirectoryName()">dir_name</b>.
+            After that he runs <b concordion:execute="runCommand(#TEXT)">cd dir_name</b>
+            command to go to newly created directory
+            and then he displays working directory path using <b concordion:execute="#fullPath = runCommandWithResult(#TEXT)">pwd</b>
+            command which result of should end with <b concordion:assertEquals="directoryName(#fullPath)">dir_name</b>.
         </p>
 
         <p>
-            Later he goes back to parent<span concordion:execute="goToParentDir()" />,
-            he removes created directory
-            <span concordion:execute="removeDirectory(#dirName)" />
-            and finally he lists content to see if the directory was
-            <b concordion:assertEquals="isRemoved(#dirName)">removed</b>.
+            Later he runs <b concordion:execute="runCommand(#TEXT)">cd ..</b>
+            command to go back to parent, he removes created directory by using <b concordion:execute="runCommand(#TEXT)">rmdir dir_name</b>
+            command and finally using <b concordion:execute="#dirContent = runCommandWithResult(#TEXT)">ls</b>
+            he lists content to see if the directory was <b concordion:assertEquals="isRemoved(#dirContent, #dirName)">removed</b>.
         </p>
 
     </div>
