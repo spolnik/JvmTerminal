@@ -14,20 +14,16 @@ public class WorkingWithDirectoriesFixture {
 
     private final TerminalService terminal = new TerminalService();
 
-    public String isDirectoryCreated(String dirContent, String dirName)
+    public boolean isDirectoryCreated(String dirContent, String dirName)
             throws IOException {
 
-        return asList(dirContent).contains(dirName)
-                ? "created"
-                : "not created";
+        return asList(dirContent).contains(dirName);
     }
 
-    public String isRemoved(String dirContent, String dirName)
+    public boolean isRemoved(String dirContent, String dirName)
             throws IOException {
 
-        return asList(dirContent).contains(dirName)
-                ? "not removed"
-                : "removed";
+        return !asList(dirContent).contains(dirName);
     }
 
     public String directoryName(String fullPath)

@@ -23,21 +23,21 @@
             When user opens terminal he runs command <b concordion:execute="runCommand(#TEXT)">mkdir dir_name</b>
             to create a new directory, then using <b concordion:execute="#dirContent = runCommandWithResult(#TEXT)">ls</b>
             command he lists content of working directory to confirm <b concordion:set="#dirName">dir_name</b>
-            directory was <b concordion:assertEquals="isDirectoryCreated(#dirContent, #dirName)">created</b>.
+            <b concordion:assertTrue="isDirectoryCreated(#dirContent, #dirName)">directory was created</b>.
         </p>
 
         <p>
             After that he runs <b concordion:execute="runCommand(#TEXT)">cd dir_name</b>
             command to go to newly created directory
             and then he displays working directory path using <b concordion:execute="#fullPath = runCommandWithResult(#TEXT)">pwd</b>
-            command which result of should end with <b concordion:assertEquals="directoryName(#fullPath)">dir_name</b>.
+            command which result of should <b concordion:assertTrue="#fullPath.endsWith(#dirName)">end with dir_name</b>.
         </p>
 
         <p>
             Later he runs <b concordion:execute="runCommand(#TEXT)">cd ..</b>
             command to go back to parent, he removes created directory by using <b concordion:execute="runCommand(#TEXT)">rmdir dir_name</b>
             command and finally using <b concordion:execute="#dirContent = runCommandWithResult(#TEXT)">ls</b>
-            he lists content to see if the directory was <b concordion:assertEquals="isRemoved(#dirContent, #dirName)">removed</b>.
+            he lists content to see if <b concordion:assertTrue="isRemoved(#dirContent, #dirName)">the directory was removed</b>.
         </p>
 
     </div>
