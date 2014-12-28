@@ -17,7 +17,7 @@
 
     <div class="example">
 
-		<h3>Creating and removing new directory</h3>
+		<h3>Creating new directory</h3>
 		
         <p>
             When user opens terminal he runs command <b concordion:execute="runCommand(#TEXT)">mkdir dir_name</b>
@@ -26,12 +26,24 @@
             <b concordion:assertTrue="isDirectoryCreated(#dirContent, #dirName)">directory was created</b>.
         </p>
 
+    </div>
+
+    <div class="example">
+
+        <h3>Checking directory</h3>
+
         <p>
             After that he runs <b concordion:execute="runCommand(#TEXT)">cd dir_name</b>
             command to go to newly created directory
             and then he displays working directory path using <b concordion:execute="#fullPath = runCommandWithResult(#TEXT)">pwd</b>
             command which result of should <b concordion:assertTrue="#fullPath.endsWith(#dirName)">end with dir_name</b>.
         </p>
+
+    </div>
+
+    <div class="example">
+
+        <h3>Removing directory</h3>
 
         <p>
             Later he runs <b concordion:execute="runCommand(#TEXT)">cd ..</b>

@@ -1,0 +1,78 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<link href="../../concordion.css" rel="stylesheet" type="text/css" />
+<body>
+
+    <h1>JvmTerminal - working with files!</h1>
+
+    <p>
+        After a user runs terminal, he creates new file
+        and displays content of working directory to see a new file.
+
+        Then he copies it into backup file and again
+        checks if current directory contains both files.
+
+        Now, user moves backup file
+        to the same directory but with different name.
+
+        Finally he removes both files
+        and he lists content to see if they were removed.
+    </p>
+
+    <div class="example">
+
+        <h3>Creating new file</h3>
+
+        <p>
+            After a user runs terminal,
+            he creates new file using <b concordion:execute="runCommand(#TEXT)">touch file_name</b>
+            command and then he runs <b concordion:execute="#lsResult = runCommandWithResult(#TEXT)">ls</b>
+            to list content of working directory to see if it
+            <b concordion:assertTrue="isFileListed(#lsResult, #fileName)">contains
+                <span concordion:set="#fileName">file_name</span> file</b>.
+        </p>
+
+    </div>
+
+    <div class="example">
+
+        <h3>Copying a file</h3>
+
+        <p>
+            Then he copies it into backup file running <b concordion:execute="runCommand(#TEXT)">cp file_name file_name.bkp</b>
+            and again he runs <b concordion:execute="#lsResult = runCommandWithResult(#TEXT)">ls</b>
+            to see if current directory
+            <b concordion:assertTrue="areFilesListed(#lsResult, #fileName, #backupFileName)">contains file_name and
+                <span concordion:set="#backupFileName">file_name.bkp</span> files</b>.
+        </p>
+
+    </div>
+
+    <div class="example">
+
+        <h3>Moving a file</h3>
+
+        <p>
+            Now, user moves backup file by running command
+            <b concordion:execute="runCommand(#TEXT)">mv file_name.bkp file_name2</b>
+            and again runs <b concordion:execute="#lsResult = runCommandWithResult(#TEXT)">ls</b>
+            to see if current directory
+            <b concordion:assertTrue="areFilesListed(#lsResult, #fileName, #fileName2)">contains file_name and
+                <span concordion:set="#fileName2">file_name2</span> files</b>.
+        </p>
+
+    </div>
+
+    <div class="example">
+
+        <h3>Removing files</h3>
+
+        <p>
+            Finally he removes both files with command <b concordion:execute="runCommand(#TEXT)">rm file_name file_name2</b>
+            and he runs <b concordion:execute="#lsResult = runCommandWithResult(#TEXT)">ls</b>
+            to lists content to check if <b concordion:assertTrue="areFilesRemoved(#lsResult, #fileName, #fileName2)">both files were removed</b>.
+        </p>
+
+    </div>
+
+</body>
+</html>
