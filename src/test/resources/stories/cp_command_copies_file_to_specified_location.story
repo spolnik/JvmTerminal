@@ -21,7 +21,7 @@ to backup file in the new directory
 passing relative path
 Given a terminal service with working directory set initially to /home/test
 And a file /home/test/file_to_copy
-And a directory /home/test/use_me
-When I run cp file_to_copy use_me/file_to_copy command
+And a directory /home/test/new_dir
+When I run cp file_to_copy new_dir/file_to_copy command
 Then I am able to see that file_to_copy file exists
-And I am able to see that use_me/file_to_copy.bkp file exists
+And I am able to see that new_dir/file_to_copy file exists

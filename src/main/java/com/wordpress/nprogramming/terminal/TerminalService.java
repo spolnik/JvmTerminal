@@ -1,6 +1,5 @@
 package com.wordpress.nprogramming.terminal;
 
-import com.wordpress.nprogramming.terminal.command.*;
 import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 import com.wordpress.nprogramming.terminal.core.FileSystemService;
 import com.wordpress.nprogramming.terminal.core.LinuxCommand;
@@ -8,7 +7,6 @@ import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,26 +15,19 @@ import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 
 public class TerminalService {
 
-    private final List<LinuxCommand> linuxCommands = new ArrayList<>();
+    private final List<LinuxCommand> linuxCommands;
     private final FileSystemContext fileSystemContext;
 
-    public TerminalService() {
-        this(FileSystems.getDefault());
+    public TerminalService(List<LinuxCommand> linuxCommands) {
+        this(FileSystems.getDefault(), linuxCommands);
     }
 
-    public TerminalService(FileSystem aFileSystem) {
+    public TerminalService(FileSystem aFileSystem, List<LinuxCommand> linuxCommands) {
 
         fileSystemContext =
                 new FileSystemService(aFileSystem, workingDir(aFileSystem));
 
-        linuxCommands.addAll(
-                Arrays.asList(
-                        new Pwd(),
-                        new Cd(),
-                        new MkDir(),
-                        new Ls(),
-                        new RmDir(),
-                        new Touch()));
+        this.linuxCommands = linuxCommands;
     }
 
     private String workingDir(FileSystem aFileSystem) {

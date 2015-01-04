@@ -1,6 +1,8 @@
 package com.wordpress.nprogramming.terminal;
 
 import com.google.common.base.Strings;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,11 +13,15 @@ import java.util.Scanner;
 
 public final class TerminalApp {
 
-    private final TerminalService terminal = new TerminalService();
+    private final TerminalService terminal;
     private final Scanner scanner;
 
     public TerminalApp() {
+        
         this.scanner = new Scanner(System.in);
+        Injector injector = Guice.createInjector(new TerminalAppModule());
+
+        terminal = injector.getInstance(TerminalService.class);
     }
 
     public static void main(String[] args) throws IOException {

@@ -1,6 +1,10 @@
 package com.wordpress.nprogramming.terminal;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.wordpress.nprogramming.terminal.builders.FileSystemBuilder;
+import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -15,16 +19,25 @@ public final class TerminalServiceDriver {
     private final FileSystem fileSystem;
 
     public TerminalServiceDriver() {
-        fileSystem = FileSystems.getDefault();
-        terminal = new TerminalService(fileSystem);
+        this(FileSystems.getDefault());
     }
 
     public TerminalServiceDriver(String path) {
-        fileSystem = FileSystemBuilder.create()
-                .withWorkingDirectorySetTo(path)
-                .build();
-
-        terminal = new TerminalService(fileSystem);
+        
+        this(FileSystemBuilder.create()
+                        .withWorkingDirectorySetTo(path)
+                        .build()
+        );
+    }
+    
+    private TerminalServiceDriver(FileSystem fileSystem) {
+        
+        Injector injector = Guice.createInjector(new TerminalAppModule());
+        List<LinuxCommand> linuxCommands = 
+                injector.getInstance(new Key<List<LinuxCommand>>() {});
+        
+        terminal = new TerminalService(fileSystem, linuxCommands);
+        this.fileSystem = fileSystem;        
     }
 
     public String processLinuxCommand(String rawCommand)

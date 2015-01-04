@@ -2,7 +2,6 @@ package com.wordpress.nprogramming.terminal.acceptance;
 
 import com.wordpress.nprogramming.terminal.TerminalServiceDriver;
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Test;
@@ -51,7 +50,6 @@ public class CpCommandBehaviour {
     }
 
     @Then("I am able to see that $fileName file exists")
-    @Pending
     public void thenIAmAbleToSeeThatBothFilesExists(
             String fileName) {
         
