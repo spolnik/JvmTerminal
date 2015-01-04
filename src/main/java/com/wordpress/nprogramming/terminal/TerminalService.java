@@ -50,7 +50,7 @@ public class TerminalService {
                     linuxCommandArguments(linuxCommandParts));
         }
 
-        return "Invalid Command!";
+        throw new IllegalArgumentException("Invalid Command: " + rawCommand);
     }
 
     private Optional<LinuxCommand> findLinuxCommand(

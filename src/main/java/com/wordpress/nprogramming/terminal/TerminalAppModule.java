@@ -30,7 +30,8 @@ public final class TerminalAppModule extends AbstractModule {
                         new MkDir(),
                         new Pwd(),
                         new RmDir(),
-                        new Touch()));
+                        new Touch(),
+                        new Rm()));
 
         return Collections.unmodifiableList(linuxCommands);
     }
