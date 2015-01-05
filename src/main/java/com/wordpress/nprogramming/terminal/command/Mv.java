@@ -29,10 +29,7 @@ public class Mv implements LinuxCommand {
         String source = args[0];
         String destination = args[1];
 
-        Files.move(
-                context.asPath(source),
-                context.asPath(destination)
-        );
+        context.moveFile(source, destination);
         
         return "";
     }

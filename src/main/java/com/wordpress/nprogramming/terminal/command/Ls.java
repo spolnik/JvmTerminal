@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
 
@@ -23,15 +24,20 @@ public final class Ls implements LinuxCommand {
     @Override
     public String execute(FileSystemContext context, String... args) throws IOException {
 
-        Path dirPath = args.length == 0
-                ? context.workingDir()
-                : context.asPath(args[0]);
-
         List<String> content =
-                Files.list(dirPath)
+                        listFiles(context, args)
                         .map(path -> path.getFileName().toString())
                         .collect(Collectors.toList());
 
         return Joiner.on(" ").join(content);
+    }
+
+    private Stream<Path> listFiles(
+            FileSystemContext context, String[] args) 
+            throws IOException {
+        
+        return args.length == 0
+                ? context.listFiles()
+                : context.listFiles(args[0]);
     }
 }

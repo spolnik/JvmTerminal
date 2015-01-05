@@ -29,8 +29,7 @@ public class Rm implements LinuxCommand {
         assert args != null;
         
         for (String fileName : args) {
-            Path path = context.asPath(fileName);
-            Files.delete(path);
+            context.deleteFile(fileName);
         }
         
         return "";

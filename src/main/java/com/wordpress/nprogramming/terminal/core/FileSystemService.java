@@ -6,6 +6,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import static com.wordpress.nprogramming.terminal.utils.PathHelper.normalize;
 
@@ -72,6 +73,63 @@ public final class FileSystemService implements FileSystemContext {
 
         Path path = asPath(dirName);
         fileSystem.provider().deleteIfExists(path);
+    }
+
+    @Override
+    public void moveFile(String source, String destination) 
+            throws IOException {
+        
+        Files.move(
+                asPath(source),
+                asPath(destination)
+        );
+    }
+
+    @Override
+    public void deleteFile(String fileName) 
+            throws IOException {
+
+        Files.delete(
+                asPath(fileName)
+        );
+    }
+
+    @Override
+    public void createFile(String fileName) 
+            throws IOException {
+        
+        Files.createFile(
+                asPath(fileName)
+        );
+    }
+
+    @Override
+    public Stream<Path> listFiles()
+            throws IOException {
+        
+        return listFiles(
+                workingDir().toString()
+        );
+    }
+
+    @Override
+    public Stream<Path> listFiles(String dirName)
+            throws IOException {
+        
+        return Files.list(
+                asPath(dirName)
+        );
+    }
+
+    @Override
+    public void copyFile(
+            String sourceFileName, String destinationFileName) 
+            throws IOException {
+        
+        Files.copy(
+                asPath(sourceFileName),
+                asPath(destinationFileName)
+        );
     }
 
     private void throwFileNotFound(

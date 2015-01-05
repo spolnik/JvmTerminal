@@ -30,10 +30,7 @@ public final class Cp implements LinuxCommand {
         String sourceFileName = args[0];
         String destinationFileName = args[1];
 
-        Files.copy(
-                context.asPath(sourceFileName), 
-                context.asPath(destinationFileName)
-        );
+        context.copyFile(sourceFileName, destinationFileName);
         
         return "";
     }

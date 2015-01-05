@@ -28,8 +28,8 @@ public class Touch implements LinuxCommand {
         assert args != null;
         String fileName = args[0];
 
-        Path path = context.asPath(fileName);
-        Files.createFile(path);
+        context.createFile(fileName);
+
         return "";
     }
 }
