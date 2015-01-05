@@ -29,7 +29,7 @@ public final class TerminalApp {
         terminalApp.run();
     }
 
-    private void run() throws IOException {
+    private void run() {
 
         prompt();
         String rawCommand = scanner.nextLine();

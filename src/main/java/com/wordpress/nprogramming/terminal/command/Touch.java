@@ -5,8 +5,6 @@ import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 import com.wordpress.nprogramming.terminal.core.LinuxCommandName;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;

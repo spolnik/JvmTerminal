@@ -5,7 +5,9 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 
 public interface LinuxCommand {
+    
     LinuxCommandName name();
+    
     String execute(FileSystemContext context, String... args)
             throws IOException;
 

@@ -7,8 +7,9 @@ import com.wordpress.nprogramming.terminal.core.FileSystemContext;
 import com.wordpress.nprogramming.terminal.core.FileSystemService;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.nio.file.FileSystem;
+import java.nio.file.NotDirectoryException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,7 +91,26 @@ public class CdCommandSpec {
                 .isEqualTo(WORKING_DIR);
     }
 
-    private FileSystemContext fileSystemContext() throws IOException {
+    @Test(expected = FileNotFoundException.class)
+    public void throwsFileNotFoundIfThereIsNoSuchFile() 
+            throws Exception {
+        
+        FileSystemContext context = fileSystemContext();
+
+        new Cd().execute(context, "non-existing-stuff");
+    }
+
+    @Test(expected = NotDirectoryException.class)
+    public void throwsNotDirectoryIfGivenArgumentIsNotAFolder() 
+            throws Exception {
+
+        FileSystemContext context = fileSystemContext();
+        context.createFile("new_file");
+        
+        new Cd().execute(context, "new_file");
+    }
+
+    private FileSystemContext fileSystemContext() {
 
         FileSystem fileSystem = FileSystemBuilder.create()
                 .withWorkingDirectorySetTo(WORKING_DIR)

@@ -1,9 +1,10 @@
 package com.wordpress.nprogramming.terminal.core;
 
 public final class LinuxCommandName {
+    
     private final String name;
 
-    public LinuxCommandName(String name) {
+    private LinuxCommandName(String name) {
         this.name = name;
     }
 

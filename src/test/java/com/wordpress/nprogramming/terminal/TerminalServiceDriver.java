@@ -46,14 +46,12 @@ public final class TerminalServiceDriver {
         return terminal.processLinuxCommand(rawCommand);
     }
 
-    public List<String> asList(String text)
-            throws IOException {
+    public List<String> asList(String text) {
 
         return Arrays.asList(text.split(" "));
     }
 
-    public String directoryName(String fullPath)
-            throws IOException {
+    public String directoryName(String fullPath) {
 
         return Paths.get(fullPath)
                 .getFileName().toString();
@@ -72,8 +70,7 @@ public final class TerminalServiceDriver {
     }
 
     private static RunOn deleteIfExistsAndThenCreateDirectory(
-            String dirName)
-            throws IOException {
+            String dirName) {
 
         return fileSystem -> {
 

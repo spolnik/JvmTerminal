@@ -2,10 +2,10 @@ package com.wordpress.nprogramming.terminal.core;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 public interface FileSystemContext {
+    
     Path workingDir();
 
     void changeWorkingDir(Path workingDirectory)
