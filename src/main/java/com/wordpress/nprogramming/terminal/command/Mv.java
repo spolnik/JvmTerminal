@@ -10,11 +10,11 @@ import java.nio.file.Files;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.wordpress.nprogramming.terminal.core.LinuxCommandName.asLinuxCommandName;
 
-public final class Cp implements LinuxCommand {
+public class Mv implements LinuxCommand {
     
     @Override
     public LinuxCommandName name() {
-        return asLinuxCommandName("cp");
+        return asLinuxCommandName("mv");
     }
 
     @Override
@@ -23,16 +23,15 @@ public final class Cp implements LinuxCommand {
             throws IOException {
 
         checkArgument(args != null && args.length > 1,
-                "cp: missing operands");
+                "mv: missing operands");
 
         assert args != null;
+        String source = args[0];
+        String destination = args[1];
 
-        String sourceFileName = args[0];
-        String destinationFileName = args[1];
-
-        Files.copy(
-                context.asPath(sourceFileName), 
-                context.asPath(destinationFileName)
+        Files.move(
+                context.asPath(source),
+                context.asPath(destination)
         );
         
         return "";

@@ -5,7 +5,6 @@ import com.google.inject.TypeLiteral;
 import com.wordpress.nprogramming.terminal.command.*;
 import com.wordpress.nprogramming.terminal.core.LinuxCommand;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +19,8 @@ public final class TerminalAppModule extends AbstractModule {
     }
 
     private List<LinuxCommand> linuxCommands() {
-        List<LinuxCommand> linuxCommands = new ArrayList<>();
 
-        linuxCommands.addAll(
+        List<LinuxCommand> linuxCommands =
                 Arrays.asList(
                         new Cd(),
                         new Cp(),
@@ -31,7 +29,8 @@ public final class TerminalAppModule extends AbstractModule {
                         new Pwd(),
                         new RmDir(),
                         new Touch(),
-                        new Rm()));
+                        new Rm(),
+                        new Mv());
 
         return Collections.unmodifiableList(linuxCommands);
     }
